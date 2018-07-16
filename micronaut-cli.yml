@@ -1,5 +1,5 @@
 profile: service
-defaultPackage: micronaut.opa.demo
+defaultPackage: de.az.demo.mn.opa
 ---
-testFramework: junit
+testFramework: spock
 sourceLanguage: java

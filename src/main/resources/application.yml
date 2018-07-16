@@ -1,7 +1,11 @@
 micronaut:
     application:
         name: micronaut-opa-demo
-                
-#Uncomment to set server port
-#    server:
-#        port: 8080
+    server:
+        port: 8080
+    heartbeat:
+        enabled: false
+    endpoints:
+        health:
+            enabled: true
+            sensitive: false

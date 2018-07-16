@@ -1,0 +1,95 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: micronaut-opa-demo-policies
+data:
+  example.rego: |
+    package mn.demo
+
+    default allow = false
+
+    authorization = {"method": parts[0], "token": parts[1]} { split(input.headers["Authorization"][_], " ", parts) }
+    token = {"payload": payload } { io.jwt.decode(authorization.token, [_, payload, _]) }
+
+    allow {
+        authorization.method = "Bearer"
+        token.payload.sub = "micronaut-opa-demo"
+    }
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: micronaut-opa-demo-deployment
+  labels:
+    app: micronaut-opa-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: micronaut-opa-demo
+  template:
+    metadata:
+      labels:
+        app: micronaut-opa-demo
+    spec:
+      containers:
+      - name: micronaut-opa-demo
+        image: az82/micronaut-opa-demo
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+              cpu: 100m
+              memory: 32Mi
+        ports:
+        - name: http
+          containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 1
+      - name: opa-sidecar
+        image: openpolicyagent/opa:0.8.2
+        resources:
+          requests:
+              cpu: 100m
+              memory: 32Mi
+        args:
+        - "run"
+        - "--ignore=.*"  # exclude hidden dirs created by Kubernetes
+        - "--server"
+        - "/policies"
+        livenessProbe:
+          httpGet:
+            path: /v1/query?q=1
+            port: 8181
+            scheme: HTTP
+          initialDelaySeconds: 4
+          periodSeconds: 10
+          timeoutSeconds: 1
+        volumeMounts:
+        - readOnly: true
+          mountPath: /policies
+          name: policies
+      volumes:
+      - name: policies
+        configMap:
+          name: micronaut-opa-demo-policies
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: micronaut-opa-demo-service
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      port: 80
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: micronaut-opa-demo
