@@ -37,30 +37,24 @@ public class OpaFilter implements HttpServerFilter {
         this.opaClient = opaClient;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Publisher<MutableHttpResponse<?>> doFilter(HttpRequest<?> request, ServerFilterChain chain) {
-        return Flowable.fromCallable(() -> {
-            // Prepare the input structure for OPA
-            // Decisions can be made on arbitrary request properties, they just need to be passed to OPA
-            Map<String, Object> input = new HashMap<>();
-            input.put("headers", request.getHeaders().asMap());
-            input.put("method", request.getMethod().toString());
-            input.put("path", request.getPath());
-            return input;
-        }).flatMapSingle(
-                // Call OPA
-                input -> opaClient.isMnDemoAllowed(input)
-                        .doOnError(e -> LOGGER.error("Unable to communicate with OPA", e))
-                        .map(OpaDataResponse::getResult)
-                        .doOnSuccess(r -> LOGGER.info("On {}, OPA says {}", request.getUri(), r))
-                        .onErrorReturnItem(false)
-        ).switchMap(
-                // Process the outcome from OPA by either letting the request pass or returning HTTP 401 Unauthorized
-                allowed -> allowed ? chain.proceed(request) : Flowable.fromCallable(
-                        () -> HttpResponse.unauthorized()
+        Map<String, Object> input = new HashMap<>();
+        input.put("headers", request.getHeaders().asMap());
+        input.put("method", request.getMethod().toString());
+        input.put("path", request.getPath());
+
+        return opaClient.isMnDemoAllowed(input)
+                .doOnError(e -> LOGGER.error("Unable to communicate with OPA", e))
+                .map(OpaDataResponse::getResult)
+                .doOnSuccess(r -> LOGGER.info("On {}, OPA says {}", request.getUri(), r))
+                .onErrorReturnItem(false)
+                .flatMapPublisher(allowed -> allowed
+                        ? chain.proceed(request)
+                        : Flowable.fromArray(HttpResponse.unauthorized()
                                 .contentType(TEXT_PLAIN)
-                                .body("You are not authorized. Use /free, you filthy peasant!")
-                ));
+                                .body("You are not authorized. Use /free, you filthy peasant!")));
     }
 
 }
