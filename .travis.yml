@@ -7,8 +7,13 @@ env:
   - secure: VvAuLC4H64pABW51EMdHQTmQKVQupInHDgoR5mnBdqipKxbl5SAhXKcYOz1ULouKbDXKiM3/ohXySzEXDHA/ILlKQrzPPV+j9RAZdbxd13UCWGv6iitkKhQUCSVX8ijH/mAKknQv37q605ZfsdWYF1SlB3FY0er+Ehw+Cn67meKiCe6mWWn/18BfVXlbw8/ChmEoHUv8vqcPBgDWOKVCpnpL71kJid9hwzhwioi0P4Ik4VwNK8KePldRSZRfMZ1XdOvf5RZBiFEghfjQ74u+68kj3zvToRUt430YAeDZM60xQELoF/s2D4ctO39z5HI3rujUxuZXz3iaybT7ldiat5YpRSKalFmXMVHQMRjw8wh1eyxaSCRtRThSDViRXzwg+QKdm/glb9Batcn97HzQDLQgUhdA1HYmvdUtKeu/TFkQvT423QsFDXwbpwGoR3feZ8Td2kmyNY6laG2vodbLuIxWNpu+CIv5jQyINZ9RT1E0fT+7G5dBIDNPglkkfyBc5U45t1pBC5V0oAqTb++vfwaahU03nrpT3TnoQtXmoujL3WivctQl3u5fIocxsVvYFP5n6XIW29AUt7LDkcZKVOSZdCz/4pN50KsJa1er+kQxrcDA6PJrTIvofSXQKtdsbI1OZ1HJ91qqYzajrQt5baLmUyxbDfBuP+INr7U6J08=
   - secure: ijLAx2IG3Rlk3hjOno22m9cKWgbsK98KQh9mxoIgiero+uuILHihBq9x3CAeZ5f9WsXtjVtChs5j76TXGzIN8SnmERiXYwvtZ0+2oqmjzE537lLUIKvU2O8tqTbS+2unicqgOaw2Wh1kDF2dCB/Ck4KOZivTYn/4TcP9a1terGlzsQYg0muWoHxs1UA++jGR2eZAnBbY6LU3cNtkFWi1cBg9CUoymIhqn+akzMRHFldWgCsmvLTcKCxeL1KRJ3c218WDVHJsaHzunzpzuNYo82/Y7Hff5DyWvSbTSVHyGWLJc9y8LTh65EfLwFDnOFf9P03fo1XoYFiaR29cMKxnZvqTLrW5HAqXKD74WWdqpVLIOkdPklw6zto+b3+lKQiT5idyZEMwo7ngatAONRF2X8cXO90n+cZ1oTlIy2JUfO2UPZ4+whkLzstkdVpNKUzfiO7cNA/3/Fj9UEkUb7iDQZmmLQojJlKNw2iKqQ669I1aKB1dTxoafFYvQVCM8EahH3l6hfBdcjsSAaclgunL63dzLmFzE03nWj7yGac2TKIK/mL6GglXTCwRdJ2wlC0RHsxdu2OsQSwAtlvhsvaaVHzjuFiacYbSEjzlN52uvZnUpQGeI3lf33Zf+8cMmxOey/bGQsLPl076Od5Yjlwu8254Vn+vYIEhijggEuNJmVw=
 
-before_script:
-- if [[ "${TRAVIS_BRANCH}" == "master" ]]; then export DOCKER_LABEL="latest"; else export DOCKER_LABEL="${TRAVIS_BRANCH}"; fi
+before_script: |
+  if [[ "${TRAVIS_BRANCH}" == "master" ]]
+  then
+    export DOCKER_LABEL="latest"
+  else
+    export DOCKER_LABEL="$(echo "${TRAVIS_BRANCH}" | tr -c '[:alnum:]-_.[:cntrl:][:space:]' '-')"
+  fi
 
 script:
 - set -e
