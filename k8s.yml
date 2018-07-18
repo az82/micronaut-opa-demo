@@ -40,7 +40,7 @@ spec:
         resources:
           requests:
               cpu: 100m
-              memory: 32Mi
+              memory: 48Mi
         ports:
         - name: http
           containerPort: 8080
