@@ -8,6 +8,7 @@ buildscript {
         classpath "io.spring.gradle:dependency-management-plugin:1.0.5.RELEASE"
         classpath "net.ltgt.gradle:gradle-apt-plugin:0.15"
         classpath "gradle.plugin.com.google.cloud.tools:jib-gradle-plugin:0.9.3"
+        classpath "gradle.plugin.com.github.lkishalmi.gatling:gradle-gatling-plugin:0.7.3"
     }
 }
 
@@ -24,6 +25,7 @@ apply plugin: "groovy"
 apply plugin: "net.ltgt.apt-eclipse"
 apply plugin: "net.ltgt.apt-idea"
 apply plugin: "com.google.cloud.tools.jib"
+apply plugin: "com.github.lkishalmi.gatling"
 
 
 repositories {
@@ -38,6 +40,21 @@ dependencyManagement {
     }
 }
 
+dependencyManagement {
+    gatling {
+        dependencies {
+            dependencySet(group: 'io.netty', version: '4.0.51.Final') {
+                entry 'netty-codec-http'
+                entry 'netty-codec'
+                entry 'netty-handler'
+                entry 'netty-buffer'
+                entry 'netty-transport'
+                entry 'netty-common'
+                entry 'netty-transport-native-epoll'
+            }
+        }
+    }
+}
 dependencies {
     annotationProcessor "io.micronaut:inject-java"
     compile "io.micronaut:http-client"
