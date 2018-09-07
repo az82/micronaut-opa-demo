@@ -32,7 +32,7 @@ public class DemoController {
      *
      * @return redirects to the free chuck norris facts
      */
-    @Get("/")
+    @Get
     public HttpResponse<String> index() {
         return HttpResponse.permanentRedirect(URI.create("/free"));
     }
