@@ -40,11 +40,13 @@ public class OpaFilter implements HttpServerFilter {
     @SuppressWarnings("unchecked")
     @Override
     public Publisher<MutableHttpResponse<?>> doFilter(HttpRequest<?> request, ServerFilterChain chain) {
+        // Input for OPA to make it's authentication decision on
         Map<String, Object> input = new HashMap<>();
         input.put("headers", request.getHeaders().asMap());
         input.put("method", request.getMethod().toString());
         input.put("path", request.getPath());
 
+        // Call OPA and act on it's decision
         return opaClient.isMnDemoAllowed(input)
                 .doOnError(e -> LOGGER.error("Unable to communicate with OPA", e))
                 .map(OpaDataResponse::getResult)
