@@ -37,8 +37,8 @@ class ApplicationSpec extends Specification {
     static RxHttpClient client
 
     void setupSpec() {
-        def opaPort = System.getProperty('demo.opa.port', System.getenv('DEMO_OPA_PORT'))
-        def opaHost = System.getProperty('demo.opa.host', System.getenv('DEMO_OPA_HOST'))
+        def opaPort = getenv('demo.opa.port')
+        def opaHost = getenv('demo.opa.host')
 
         // Only start the OPA mock if no host / port for OPA has been pre-set
         if (opaPort == null && opaHost == null) {
@@ -125,5 +125,8 @@ class ApplicationSpec extends Specification {
         return mock
     }
 
+    def getenv(String name) {
+        return System.getProperty(name, System.getenv(name.toUpperCase().replace('.', '_')))
+    }
 
 }
