@@ -2,7 +2,7 @@
 
 This showcase demonstrates policy enforcement with OPA (Open Policy Agent) in Java.
 
-- Application Runtime: [OpenJDK 8](http://openjdk.java.net/)
+- Application Runtime: [OpenJDK 11](http://openjdk.java.net/)
 - Application Framework: [Micronaut](http://micronaut.io/)
 - Containerization: [JIB](https://github.com/GoogleContainerTools/jib)
 - Orchestration: [Kubernetes](https://kubernetes.io/)
