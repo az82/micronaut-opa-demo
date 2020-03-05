@@ -1,17 +1,12 @@
 # Micronaut / OPA demo application
 
-This showcase demonstrates policy enforcement with OPA (Open Policy Agent) in Java with a bleeding edge 
-technology stack.
+This showcase demonstrates policy enforcement with OPA (Open Policy Agent) in Java.
 
 - Application Runtime: [OpenJDK 8](http://openjdk.java.net/)
 - Application Framework: [Micronaut](http://micronaut.io/)
 - Containerization: [JIB](https://github.com/GoogleContainerTools/jib)
 - Orchestration: [Kubernetes](https://kubernetes.io/)
 - Policy Enforcement: [OPA](https://www.openpolicyagent.org/)
-
-Java is kept at version 8 because at the time of creation,
-1. JIB only supports OpenJDK 8 as runtime
-2. Micronaut does not run out-of-the-box with Java 9,10
 
 ## Build & Deployment
 
@@ -32,7 +27,7 @@ OPA instance at localhost:8181.
 You can access the application using *curl*: 
 
 ```bash
-curl http://localhost:8080
+curl http://localhost:8080/free
 ```
 
 ### Container Build

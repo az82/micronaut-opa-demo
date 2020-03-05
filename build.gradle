@@ -4,11 +4,11 @@ buildscript {
         maven { url "https://plugins.gradle.org/m2/" }
     }
     dependencies {
-        classpath "com.github.jengelman.gradle.plugins:shadow:2.0.4"
-        classpath "io.spring.gradle:dependency-management-plugin:1.0.5.RELEASE"
-        classpath "net.ltgt.gradle:gradle-apt-plugin:0.15"
-        classpath "gradle.plugin.com.google.cloud.tools:jib-gradle-plugin:0.9.3"
-        classpath "gradle.plugin.com.github.lkishalmi.gatling:gradle-gatling-plugin:0.7.3"
+        classpath "com.github.jengelman.gradle.plugins:shadow:4.0.3"
+        classpath "io.spring.gradle:dependency-management-plugin:1.0.9.RELEASE"
+        classpath "net.ltgt.gradle:gradle-apt-plugin:0.21"
+        classpath "gradle.plugin.com.google.cloud.tools:jib-gradle-plugin:2.1.0"
+        classpath "gradle.plugin.com.github.lkishalmi.gatling:gradle-gatling-plugin:3.2.9"
     }
 }
 
@@ -36,39 +36,24 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom 'io.micronaut:bom:1.0.0.M4'
+        mavenBom 'io.micronaut:micronaut-bom:1.3.2'
     }
 }
 
-dependencyManagement {
-    gatling {
-        dependencies {
-            dependencySet(group: 'io.netty', version: '4.0.51.Final') {
-                entry 'netty-codec-http'
-                entry 'netty-codec'
-                entry 'netty-handler'
-                entry 'netty-buffer'
-                entry 'netty-transport'
-                entry 'netty-common'
-                entry 'netty-transport-native-epoll'
-            }
-        }
-    }
-}
 dependencies {
-    annotationProcessor "io.micronaut:inject-java"
-    compile "io.micronaut:http-client"
-    compile "io.micronaut:http-server-netty"
-    compile "io.micronaut:inject"
-    compile "io.micronaut:runtime"
-    compile "io.micronaut:management"
-    compileOnly "io.micronaut:inject-java"
+    annotationProcessor "io.micronaut:micronaut-inject-java"
+    compile "io.micronaut:micronaut-http-client"
+    compile "io.micronaut:micronaut-http-server-netty"
+    compile "io.micronaut:micronaut-inject"
+    compile "io.micronaut:micronaut-runtime"
+    compile "io.micronaut:micronaut-management"
+    compileOnly "io.micronaut:micronaut-inject-java"
     runtime "ch.qos.logback:logback-classic:1.2.3"
-    testCompile "io.micronaut:inject-groovy"
-    testCompile("org.spockframework:spock-core:1.1-groovy-2.4") {
+    testCompile "io.micronaut:micronaut-inject-groovy"
+    testCompile("org.spockframework:spock-core:1.3-groovy-2.5") {
         exclude group: "org.codehaus.groovy", module: "groovy-all"
     }
-    testCompile "com.github.tomakehurst:wiremock-standalone:2.18.0"
+    testCompile "com.github.tomakehurst:wiremock-standalone:2.26.2"
 }
 
 shadowJar {
